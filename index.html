@@ -102,7 +102,7 @@
 
     h1 {
       margin: 0 0 24px;
-      font-size: clamp(2.8rem, 6vw, 5rem);
+      font-size: clamp(2.2rem, 4.8vw, 4rem);
       line-height: 0.95;
       letter-spacing: -0.04em;
       max-width: none;
@@ -163,10 +163,10 @@
     }
 
     .chart-shell {
-      padding: 26px;
+      padding: 22px;
       display: grid;
-      gap: 22px;
-      grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr);
+      gap: 0;
+      grid-template-columns: 1fr;
     }
 
     .chart-card {
@@ -189,12 +189,8 @@
     .heading-copy {
       min-width: 0;
       padding-top: 10px;
-    }
-
-    .quote-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
+      max-width: none;
+      flex: 1 1 auto;
     }
 
     h2 {
@@ -205,7 +201,7 @@
     .section-sub {
       margin: 6px 0 0;
       color: var(--muted);
-      max-width: 64ch;
+      max-width: none;
       line-height: 1.55;
     }
 
@@ -546,9 +542,12 @@
 
     .stoic-card {
       position: relative;
+      width: 64ch;
+      max-width: 100%;
+      min-height: 132px;
       padding: 22px;
       border-radius: 24px;
-      background: rgba(255, 248, 238, 0.9);
+      background: rgba(255, 255, 255, 0.54);
       border: 1px solid rgba(115, 94, 70, 0.12);
       box-shadow: var(--shadow);
     }
@@ -558,10 +557,39 @@
       white-space: normal;
     }
 
-    .stoic-card:first-child,
-    .stoic-card:last-child {
-      margin: 0;
-      transform: none;
+    .quote-carousel {
+      display: flex;
+      align-items: stretch;
+      gap: 12px;
+      max-width: calc(100% - 6px);
+    }
+
+    .quote-nav-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      justify-content: center;
+      flex: 0 0 auto;
+    }
+
+    .quote-nav {
+      width: 34px;
+      height: 34px;
+      border: 1px solid rgba(115, 94, 70, 0.16);
+      background: rgba(255, 255, 255, 0.78);
+      color: var(--text);
+      border-radius: 999px;
+      font: inherit;
+      font-size: 1rem;
+      line-height: 1;
+      cursor: pointer;
+      flex: 0 0 auto;
+    }
+
+    .quote-nav:hover,
+    .quote-nav:focus-visible {
+      background: rgba(255, 255, 255, 0.95);
+      outline: none;
     }
 
     .mini-grid {
@@ -599,13 +627,16 @@
 
     @media (max-width: 980px) {
       .hero-copy,
-      .chart-shell,
-      .quote-row {
+      .chart-shell {
         grid-template-columns: 1fr;
       }
 
       .heading-row {
         flex-direction: column;
+      }
+
+      .quote-carousel {
+        max-width: 100%;
       }
 
       .legend {
@@ -668,16 +699,15 @@
     <section class="chart-shell">
       <div class="chart-card">
         <div class="section-head">
-          <div class="quote-row">
-            <section class="stoic-card">
-              <p class="quote">"Never let the future disturb you. You will meet it, if you have to, with the same weapons of reason which today arm you against the present."</p>
-              <p class="quote-attribution">Marcus Aurelius</p>
+          <div class="quote-carousel">
+            <section class="stoic-card" id="marcusQuoteCard">
+              <p class="quote" id="marcusQuoteText">"Never let the future disturb you. You will meet it, if you have to, with the same weapons of reason which today arm you against the present."</p>
+              <p class="quote-attribution" id="marcusQuoteAttribution">Marcus Aurelius</p>
             </section>
-
-            <section class="stoic-card">
-              <p class="quote">"What stands in the way becomes the way."</p>
-              <p class="quote-attribution">Marcus Aurelius</p>
-            </section>
+            <div class="quote-nav-stack">
+              <button class="quote-nav" id="quotePrev" type="button" aria-label="Previous quote">‹</button>
+              <button class="quote-nav" id="quoteNext" type="button" aria-label="Next quote">›</button>
+            </div>
           </div>
 
           <div class="heading-row">
@@ -1063,6 +1093,10 @@
     const markerSvgLayer = document.getElementById("markerSvgLayer");
     const tooltip = document.getElementById("tooltip");
     const profileToggle = document.getElementById("profileToggle");
+    const quotePrev = document.getElementById("quotePrev");
+    const quoteNext = document.getElementById("quoteNext");
+    const marcusQuoteText = document.getElementById("marcusQuoteText");
+    const marcusQuoteAttribution = document.getElementById("marcusQuoteAttribution");
 
     const plotWidth = dims.width - dims.margin.left - dims.margin.right;
     const plotHeight = dims.height - dims.margin.top - dims.margin.bottom;
@@ -1070,6 +1104,18 @@
     const maxStage = 6.2;
 
     let currentView = "both";
+    let currentQuoteIndex = 0;
+
+    const marcusQuotes = [
+      {
+        text: "\"Never let the future disturb you. You will meet it, if you have to, with the same weapons of reason which today arm you against the present.\"",
+        attribution: "Marcus Aurelius"
+      },
+      {
+        text: "\"What stands in the way becomes the way.\"",
+        attribution: "Marcus Aurelius"
+      }
+    ];
 
     function clamp(value, min, max) {
       return Math.max(min, Math.min(max, value));
@@ -1390,10 +1436,17 @@
       });
     }
 
+    function renderQuote() {
+      const quote = marcusQuotes[currentQuoteIndex];
+      marcusQuoteText.textContent = quote.text;
+      marcusQuoteAttribution.textContent = quote.attribution;
+    }
+
     function renderAll() {
       renderTimelines();
       hideTooltip();
       updateToggleUi();
+      renderQuote();
     }
 
     profileToggle.addEventListener("click", (event) => {
@@ -1403,6 +1456,16 @@
       }
       currentView = button.dataset.view;
       renderAll();
+    });
+
+    quotePrev.addEventListener("click", () => {
+      currentQuoteIndex = (currentQuoteIndex - 1 + marcusQuotes.length) % marcusQuotes.length;
+      renderQuote();
+    });
+
+    quoteNext.addEventListener("click", () => {
+      currentQuoteIndex = (currentQuoteIndex + 1) % marcusQuotes.length;
+      renderQuote();
     });
 
     renderAll();
