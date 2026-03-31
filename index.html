@@ -1,0 +1,1411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Long Arc | Rob &amp; Will</title>
+  <style>
+    :root {
+      --bg-top: #f7eedf;
+      --bg-bottom: #d9e3ea;
+      --panel: rgba(255, 251, 245, 0.72);
+      --panel-strong: rgba(255, 248, 238, 0.9);
+      --text: #2b2a28;
+      --muted: #6c655c;
+      --grid: rgba(60, 50, 40, 0.12);
+      --accent: #af5d32;
+      --accent-soft: rgba(175, 93, 50, 0.14);
+      --future: #4f6c7a;
+      --future-soft: rgba(79, 108, 122, 0.18);
+      --shadow: 0 24px 60px rgba(52, 44, 34, 0.12);
+      --radius: 28px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(255, 255, 255, 0.78), transparent 32%),
+        radial-gradient(circle at 82% 10%, rgba(208, 110, 48, 0.17), transparent 28%),
+        radial-gradient(circle at 50% 100%, rgba(70, 110, 135, 0.16), transparent 26%),
+        linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
+      font-family: "Avenir Next", "Segoe UI", sans-serif;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+      background-size: 42px 42px;
+      mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.22), rgba(0, 0, 0, 0));
+    }
+
+    main {
+      width: 816px;
+      max-width: calc(100% - 32px);
+      margin: 28px auto 48px;
+      display: grid;
+      gap: 24px;
+    }
+
+    .hero,
+    .chart-shell {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(115, 94, 70, 0.12);
+      background: var(--panel);
+      backdrop-filter: blur(14px);
+      box-shadow: var(--shadow);
+      border-radius: var(--radius);
+    }
+
+    .hero {
+      padding: 32px;
+    }
+
+    .hero::after,
+    .chart-shell::after {
+      content: "";
+      position: absolute;
+      inset: auto -10% -55% auto;
+      width: 360px;
+      height: 360px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.7), transparent 68%);
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      margin: 0 0 20px;
+      font-size: 0.84rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    h1,
+    h2,
+    .quote {
+      font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", serif;
+    }
+
+    h1 {
+      margin: 0 0 24px;
+      font-size: clamp(2.8rem, 6vw, 5rem);
+      line-height: 0.95;
+      letter-spacing: -0.04em;
+      max-width: none;
+      white-space: nowrap;
+    }
+
+    .hero-copy {
+      display: block;
+      margin-top: 10px;
+    }
+
+    .lead {
+      margin: 0;
+      max-width: 64ch;
+      font-size: 1.06rem;
+      line-height: 1.7;
+      color: rgba(43, 42, 40, 0.88);
+    }
+
+    .quote-card {
+      margin: 18px 0;
+      max-width: 64ch;
+      padding: 18px 20px;
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.54);
+      border: 1px solid rgba(115, 94, 70, 0.12);
+    }
+
+    .quote {
+      margin: 0 0 10px;
+      font-size: 1.12rem;
+      line-height: 1.32;
+      font-style: italic;
+      font-weight: 400;
+      white-space: nowrap;
+    }
+
+    .quote-attribution {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 22px;
+    }
+
+    .pill {
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.65);
+      border: 1px solid rgba(115, 94, 70, 0.12);
+      color: rgba(43, 42, 40, 0.84);
+      font-size: 0.94rem;
+    }
+
+    .chart-shell {
+      padding: 26px;
+      display: grid;
+      gap: 22px;
+      grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr);
+    }
+
+    .chart-card {
+      min-width: 0;
+    }
+
+    .section-head {
+      display: grid;
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+
+    .heading-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 18px;
+    }
+
+    .heading-copy {
+      min-width: 0;
+      padding-top: 10px;
+    }
+
+    .quote-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: clamp(1.7rem, 3vw, 2.2rem);
+    }
+
+    .section-sub {
+      margin: 6px 0 0;
+      color: var(--muted);
+      max-width: 64ch;
+      line-height: 1.55;
+    }
+
+    .legend {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      font-size: 0.88rem;
+      color: var(--muted);
+    }
+
+    .legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .legend-line {
+      width: 28px;
+      height: 0;
+      border-top: 3px solid;
+      border-radius: 999px;
+    }
+
+    .legend-line.future {
+      border-top-style: dashed;
+      border-top-color: var(--future);
+    }
+
+    .legend-line.rob {
+      border-top-color: #3f6d82;
+    }
+
+    .legend-line.actual {
+      border-top-color: var(--accent);
+    }
+
+    .control-stack {
+      display: grid;
+      gap: 12px;
+      justify-items: end;
+      justify-self: end;
+      align-self: start;
+    }
+
+    .profile-toggle {
+      display: inline-flex;
+      gap: 6px;
+      padding: 3px;
+      border-radius: 999px;
+      border: 1px solid rgba(115, 94, 70, 0.12);
+      background: rgba(255, 255, 255, 0.68);
+    }
+
+    .toggle-btn {
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      border-radius: 999px;
+      padding: 4px 9px;
+      font: inherit;
+      font-size: 0.72rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 160ms ease, color 160ms ease, transform 160ms ease;
+    }
+
+    .toggle-btn:hover,
+    .toggle-btn:focus-visible {
+      background: rgba(255, 255, 255, 0.84);
+      color: var(--text);
+      outline: none;
+      transform: translateY(-1px);
+    }
+
+    .toggle-btn.active {
+      background: rgba(43, 42, 40, 0.92);
+      color: #fffdf8;
+      box-shadow: 0 10px 20px rgba(54, 43, 28, 0.16);
+    }
+
+    .chart-frame {
+      position: relative;
+      min-height: 530px;
+      border-radius: 24px;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.62), rgba(255, 255, 255, 0.38)),
+        rgba(255, 249, 241, 0.68);
+      border: 1px solid rgba(115, 94, 70, 0.12);
+      overflow: hidden;
+    }
+
+    .chart-frame::before {
+      content: "";
+      position: absolute;
+      inset: 18px;
+      border-radius: 18px;
+      background:
+        radial-gradient(circle at 78% 22%, rgba(79, 108, 122, 0.1), transparent 18%),
+        radial-gradient(circle at 18% 75%, rgba(175, 93, 50, 0.09), transparent 20%);
+      pointer-events: none;
+    }
+
+    svg {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .grid-line {
+      stroke: var(--grid);
+      stroke-width: 1;
+    }
+
+    .stage-band {
+      fill: rgba(88, 77, 64, 0.035);
+    }
+
+    .stage-band.alt {
+      fill: rgba(88, 77, 64, 0.07);
+    }
+
+    .axis-label,
+    .tick-label {
+      fill: var(--muted);
+      font-family: "Avenir Next", "Segoe UI", sans-serif;
+    }
+
+    .axis-label {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .tick-label {
+      font-size: 13px;
+    }
+
+    .tick-label.dense {
+      font-size: 11px;
+    }
+
+    .tick-label.major {
+      font-weight: 700;
+      fill: rgba(43, 42, 40, 0.86);
+    }
+
+    .today-band {
+      fill: rgba(175, 93, 50, 0.08);
+    }
+
+    .line-actual {
+      fill: none;
+      stroke: var(--accent);
+      stroke-width: 5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      filter: drop-shadow(0 10px 14px rgba(175, 93, 50, 0.2));
+      stroke-dasharray: 880;
+      stroke-dashoffset: 880;
+      animation: draw-actual 1.35s ease forwards;
+    }
+
+    .line-future {
+      fill: none;
+      stroke: var(--future);
+      stroke-width: 4;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 12 10;
+      opacity: 0.88;
+      animation: fade-in 1.8s ease forwards;
+    }
+
+    @keyframes draw-actual {
+      to {
+        stroke-dashoffset: 0;
+      }
+    }
+
+    @keyframes fade-in {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+      to {
+        opacity: 0.88;
+        transform: translateY(0);
+      }
+    }
+
+    .marker-group {
+      cursor: pointer;
+    }
+
+    .marker-hit {
+      fill: transparent;
+    }
+
+    .marker-halo {
+      opacity: 0.18;
+    }
+
+    .marker-ring {
+      fill: none;
+      stroke: rgba(255, 255, 255, 0.95);
+      stroke-width: 2;
+    }
+
+    .marker-core {
+      transition: r 160ms ease;
+    }
+
+    .marker-group.active .marker-core,
+    .marker-group:hover .marker-core,
+    .marker-group:focus .marker-core {
+      r: 7.6;
+    }
+
+    .marker-label {
+      white-space: nowrap;
+      font-size: 11px;
+      fill: rgba(43, 42, 40, 0.78);
+      font-weight: 700;
+      pointer-events: none;
+      opacity: 0;
+      text-anchor: middle;
+      transition: opacity 160ms ease;
+    }
+
+    .marker-group.active .marker-label,
+    .marker-group:hover .marker-label,
+    .marker-group:focus .marker-label {
+      opacity: 1;
+    }
+
+    .tooltip {
+      position: absolute;
+      min-width: 220px;
+      max-width: 280px;
+      padding: 14px 16px;
+      border-radius: 18px;
+      background: rgba(31, 31, 31, 0.92);
+      color: #fffef7;
+      box-shadow: 0 18px 38px rgba(23, 20, 17, 0.25);
+      pointer-events: none;
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity 150ms ease, transform 150ms ease;
+      z-index: 5;
+    }
+
+    .tooltip.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .tooltip-type {
+      margin: 0 0 6px;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.72);
+    }
+
+    .tooltip strong {
+      display: block;
+      font-size: 1rem;
+      margin-bottom: 3px;
+    }
+
+    .tooltip p {
+      margin: 0;
+      font-size: 0.89rem;
+      line-height: 1.45;
+      color: rgba(255, 254, 247, 0.86);
+    }
+
+    .detail-panel {
+      display: grid;
+      gap: 16px;
+      align-content: start;
+      padding-top: 8px;
+    }
+
+    .detail-card,
+    .mini-card {
+      background: var(--panel-strong);
+      border: 1px solid rgba(115, 94, 70, 0.12);
+      border-radius: 24px;
+    }
+
+    .detail-card {
+      padding: 22px;
+      min-height: 100%;
+    }
+
+    .detail-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.75);
+      color: var(--muted);
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .detail-company {
+      margin: 16px 0 4px;
+      font-size: 2rem;
+      line-height: 1;
+    }
+
+    .detail-title {
+      margin: 0;
+      font-size: 1.05rem;
+      color: rgba(43, 42, 40, 0.85);
+    }
+
+    .detail-stage {
+      margin: 14px 0 0;
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 0.94rem;
+    }
+
+    .detail-copy {
+      margin: 14px 0 0;
+      line-height: 1.65;
+      color: rgba(43, 42, 40, 0.84);
+    }
+
+    .stoic-card {
+      position: relative;
+      padding: 22px;
+      border-radius: 24px;
+      background: rgba(255, 248, 238, 0.9);
+      border: 1px solid rgba(115, 94, 70, 0.12);
+      box-shadow: var(--shadow);
+    }
+
+    .stoic-card .quote {
+      margin: 0 0 10px;
+      white-space: normal;
+    }
+
+    .stoic-card:first-child,
+    .stoic-card:last-child {
+      margin: 0;
+      transform: none;
+    }
+
+    .mini-grid {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .mini-card {
+      padding: 16px;
+    }
+
+    .mini-label {
+      margin: 0;
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .mini-value {
+      margin: 10px 0 0;
+      font-size: 1.4rem;
+      line-height: 1.1;
+      font-weight: 800;
+    }
+
+    .mini-copy {
+      margin: 8px 0 0;
+      color: rgba(43, 42, 40, 0.78);
+      line-height: 1.5;
+      font-size: 0.92rem;
+    }
+
+    @media (max-width: 980px) {
+      .hero-copy,
+      .chart-shell,
+      .quote-row {
+        grid-template-columns: 1fr;
+      }
+
+      .heading-row {
+        flex-direction: column;
+      }
+
+      .legend {
+        justify-content: flex-start;
+      }
+    }
+
+    @media (max-width: 720px) {
+      main {
+        width: min(100% - 20px, 1200px);
+        margin-top: 14px;
+      }
+
+      .hero,
+      .chart-shell {
+        border-radius: 24px;
+      }
+
+      .hero,
+      .chart-shell {
+        padding: 18px;
+      }
+
+      .chart-frame {
+        min-height: 460px;
+      }
+
+      .mini-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .marker-label {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="hero">
+      <p class="eyebrow">Putting Things In Perspective</p>
+      <h1>The Journey of a Lifetime</h1>
+      <div class="hero-copy">
+        <p class="lead">
+          The journey really is the point. It is long, it is surprising, and if you are lucky it is also a lot of fun:
+          new teammates, new risks, new wins, new setbacks, and long stretches where growth is happening even when it
+          does not feel dramatic yet.
+        </p>
+        <div class="quote-card">
+          <p class="quote">"A journey of a thousand miles begins with a single step."</p>
+          <p class="quote-attribution">Lao Tzu</p>
+        </div>
+        <p class="lead">
+          The chart below shows something simple and encouraging: you are not behind, you are early, and you are
+          already off to an amazing start.
+        </p>
+      </div>
+    </section>
+
+    <section class="chart-shell">
+      <div class="chart-card">
+        <div class="section-head">
+          <div class="quote-row">
+            <section class="stoic-card">
+              <p class="quote">"Never let the future disturb you. You will meet it, if you have to, with the same weapons of reason which today arm you against the present."</p>
+              <p class="quote-attribution">Marcus Aurelius</p>
+            </section>
+
+            <section class="stoic-card">
+              <p class="quote">"What stands in the way becomes the way."</p>
+              <p class="quote-attribution">Marcus Aurelius</p>
+            </section>
+          </div>
+
+          <div class="heading-row">
+            <div class="heading-copy">
+              <h2>Let's Go! You're On Track!</h2>
+              <p class="section-sub">
+                The X axis is time since graduation, including negative time for pre-grad founder chapters. The Y axis
+                stratifies different phases of work life: Worker, Manager, Startup Leader, Vice President, Founder, Multiplier.
+              </p>
+            </div>
+            <div class="control-stack">
+              <div class="profile-toggle" id="profileToggle" aria-label="Timeline view toggle">
+                <button class="toggle-btn active" type="button" data-view="both" aria-pressed="true">Both</button>
+                <button class="toggle-btn" type="button" data-view="rob" aria-pressed="false">Rob</button>
+                <button class="toggle-btn" type="button" data-view="will" aria-pressed="false">Will</button>
+              </div>
+              <div class="legend">
+                <span><i class="legend-line rob"></i>Rob</span>
+                <span><i class="legend-line actual"></i>Will</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="chart-frame" id="chartFrame">
+          <svg id="timelineSvg" viewBox="0 0 920 560" aria-labelledby="chartTitle chartDesc" role="img">
+            <title id="chartTitle">Career journey since graduation</title>
+            <desc id="chartDesc">An interactive timeline comparing Rob and Will Meinhardt from college graduation onward.</desc>
+            <g id="gridLayer"></g>
+            <g id="pathLayer"></g>
+            <g id="markerSvgLayer"></g>
+          </svg>
+          <div class="tooltip" id="tooltip" aria-hidden="true"></div>
+        </div>
+
+      </div>
+
+      <aside class="detail-panel"></aside>
+    </section>
+
+  </main>
+
+  <script>
+    const dims = {
+      width: 920,
+      height: 560,
+      margin: { top: 36, right: 40, bottom: 76, left: 172 }
+    };
+
+    const profiles = {
+      will: {
+        id: "will",
+        name: "Will",
+        fullName: "Will Meinhardt",
+        color: "#af5d32",
+        summary: "Will's line uses the six custom strata you defined, including founder dots before graduation and the fast climb from worker to startup leader after Jun 2023.",
+        actual: [
+          {
+            id: "will-sierra-mar",
+            profile: "will",
+            type: "actual",
+            badge: "SM",
+            company: "Sierra Mar",
+            title: "Co-Founder",
+            dateLabel: "Jan 2021 | about T=-2.4",
+            yearsFromGrad: -2.42,
+            stage: 5,
+            stageLabel: "Founder",
+            note: "One founder chapter begins well before graduation, which is why Will's line starts above the worker band before T=0."
+          },
+          {
+            id: "will-fiji-home",
+            profile: "will",
+            type: "actual",
+            badge: "FH",
+            company: "Fiji Home USA",
+            title: "Founder",
+            dateLabel: "Jun 2021 | about T=-2.0",
+            yearsFromGrad: -2.0,
+            stage: 5,
+            stageLabel: "Founder",
+            note: "A second founder chapter starts before graduation too, reinforcing that the official post-grad timeline does not capture all the real work."
+          },
+          {
+            id: "will-sierra-end",
+            profile: "will",
+            type: "actual",
+            badge: "SM",
+            company: "Sierra Mar + Verkada",
+            title: "Sierra Mar concludes | Verkada: Associate Account Executive",
+            dateLabel: "Sep 2023 | about T=+0.3",
+            yearsFromGrad: 0.25,
+            stage: 5,
+            stageLabel: "Founder",
+            note: "Because Sierra Mar runs longer than two years, it gets both a starting dot and an ending dot. At the end of that founder chapter, Will is already simultaneously in the Verkada worker chapter."
+          },
+          {
+            id: "will-verkada-aae",
+            profile: "will",
+            type: "actual",
+            badge: "VK",
+            company: "Verkada",
+            title: "Associate Account Executive",
+            dateLabel: "Jul 2023 | about T=+0.1",
+            yearsFromGrad: 1 / 12,
+            stage: 1,
+            stageLabel: "Worker",
+            note: "Your level 1 worker band starts here: first full-time role after graduation."
+          },
+          {
+            id: "will-verkada-team-lead",
+            profile: "will",
+            type: "actual",
+            badge: "VK",
+            company: "Verkada",
+            title: "Associate Account Executive, Team Lead",
+            dateLabel: "Nov 2023 | about T=+0.4",
+            yearsFromGrad: 5 / 12,
+            stage: 2,
+            stageLabel: "Manager",
+            note: "Will enters your manager band only a few months after graduation."
+          },
+          {
+            id: "will-verkada-ae",
+            profile: "will",
+            type: "actual",
+            badge: "M1",
+            company: "Verkada",
+            title: "Account Executive, Mid-Market",
+            dateLabel: "Jan 2024 | about T=+0.6",
+            yearsFromGrad: 7 / 12,
+            stage: 2.1,
+            stageLabel: "Manager",
+            note: "Still in the manager band, but with widening responsibility."
+          },
+          {
+            id: "will-mach1-head-sales",
+            profile: "will",
+            type: "actual",
+            badge: "M1",
+            company: "Mach 1",
+            title: "Head of Sales | current chapter",
+            dateLabel: "Apr 2025 to Present | starts about T=+1.8",
+            yearsFromGrad: 22 / 12,
+            stage: 3,
+            stageLabel: "Startup Leader",
+            note: "This combines the start of the Mach 1 chapter with the current state, so Will has one clean startup-leader bullet instead of two separate Mach 1 dots."
+          }
+        ],
+        future: [],
+        prelaunch: [
+          {
+            id: "will-sierra-mar",
+            profile: "will",
+            type: "prelaunch",
+            badge: "SM",
+            company: "Sierra Mar",
+            title: "Co-Founder",
+            dateLabel: "Jan 2021 | about T=-2.4",
+            stageLabel: "Founder",
+            note: "This founder chapter is now plotted directly on the main timeline before T=0."
+          },
+          {
+            id: "will-fiji-home",
+            profile: "will",
+            type: "prelaunch",
+            badge: "FH",
+            company: "Fiji Home USA",
+            title: "Founder",
+            dateLabel: "Jun 2021 | about T=-2.0",
+            stageLabel: "Founder",
+            note: "A second founder dot appears before graduation, exactly as requested."
+          }
+        ]
+      },
+      rob: {
+        id: "rob",
+        name: "Rob",
+        fullName: "Rob Meinhardt",
+        color: "#3f6d82",
+        summary: "Rob's line now follows your six strata: R.B. Webber worker and manager assumptions after 1991, AvantGo startup leader and vice president, KACE founder, then multiplier chapters beginning in 2013.",
+        actual: [
+          {
+            id: "rob-grad",
+            profile: "rob",
+            type: "actual",
+            badge: "RB",
+            company: "R.B. Webber & Company",
+            title: "Consultant",
+            dateLabel: "T=0 | 1991",
+            yearsFromGrad: 0,
+            stage: 1,
+            stageLabel: "Worker",
+            note: "Using your framing, the first Rob dot is the first R.B. Webber chapter right after Yale in 1991."
+          },
+          {
+            id: "rob-rbw-principal",
+            profile: "rob",
+            type: "actual",
+            badge: "RB",
+            company: "R.B. Webber & Company",
+            title: "Principal",
+            dateLabel: "1993 | about T=+2",
+            yearsFromGrad: 2,
+            stage: 2,
+            stageLabel: "Manager",
+            note: "Per your instruction, Rob reaches the manager band about two years into the R.B. Webber chapter."
+          },
+          {
+            id: "rob-avantgo-start",
+            profile: "rob",
+            type: "actual",
+            badge: "AG",
+            company: "AvantGo",
+            title: "Joined founding team",
+            dateLabel: "1998 | about T=+7",
+            yearsFromGrad: 7,
+            stage: 3,
+            stageLabel: "Startup Leader",
+            note: "Public bios place Rob at AvantGo beginning in 1998. In your stratification, this is the startup-leader transition."
+          },
+          {
+            id: "rob-avantgo-vp",
+            profile: "rob",
+            type: "actual",
+            badge: "AG",
+            company: "AvantGo",
+            title: "Vice President of Marketing",
+            dateLabel: "1999 | about T=+8",
+            yearsFromGrad: 8,
+            stage: 4,
+            stageLabel: "Vice President",
+            note: "Using your rule of one year after joining AvantGo, Rob enters the vice-president band around 1999."
+          },
+          {
+            id: "rob-kace",
+            profile: "rob",
+            type: "actual",
+            badge: "KC",
+            company: "KACE / Dell KACE",
+            title: "Founder and CEO, later General Manager",
+            dateLabel: "2003 to 2013 | begins about T=+12",
+            yearsFromGrad: 12,
+            stage: 5,
+            stageLabel: "Founder",
+            note: "This is one continuous experience: founding KACE and then leading the Dell KACE chapter after acquisition. It stays in the founder band rather than splitting into a separate point."
+          },
+          {
+            id: "rob-toba",
+            profile: "rob",
+            type: "actual",
+            badge: "TB",
+            company: "Toba Capital",
+            title: "Partner",
+            dateLabel: "2013 | about T=+22",
+            yearsFromGrad: 22,
+            stage: 6,
+            stageLabel: "Multiplier",
+            note: "Multiplier begins here. From this point forward, every Rob dot stays on the multiplier line and shows the active stack at that moment."
+          },
+          {
+            id: "rob-kace-end",
+            profile: "rob",
+            type: "actual",
+            badge: "KC",
+            company: "KACE / Dell KACE + Toba Capital",
+            title: "KACE / Dell KACE concludes | Toba Capital: Partner begins",
+            dateLabel: "2013 | about T=+22",
+            yearsFromGrad: 22,
+            stage: 6,
+            stageLabel: "Multiplier",
+            note: "This is a single multiplier-line transition dot: KACE / Dell KACE concludes at the same moment the multiplier era begins with Toba Capital."
+          },
+          {
+            id: "rob-toba-alteryx",
+            profile: "rob",
+            type: "actual",
+            badge: "ML",
+            company: "Toba Capital + Alteryx",
+            title: "Toba Capital: Partner | Alteryx: advisor chapter",
+            dateLabel: "2014 | about T=+23",
+            yearsFromGrad: 23.0,
+            stage: 6,
+            stageLabel: "Multiplier",
+            note: "This first stack change after Toba adds Alteryx while staying entirely on the multiplier line."
+          },
+          {
+            id: "rob-toba-floqast",
+            profile: "rob",
+            type: "actual",
+            badge: "ML",
+            company: "Toba Capital + FloQast",
+            title: "Toba Capital: Partner | FloQast: Board Member & Advisor",
+            dateLabel: "Jun 2014 | about T=+23",
+            yearsFromGrad: 23.4,
+            stage: 6,
+            stageLabel: "Multiplier",
+            note: "This next stack change drops Alteryx and adds FloQast."
+          },
+          {
+            id: "rob-toba-furious-floqast",
+            profile: "rob",
+            type: "actual",
+            badge: "ML",
+            company: "Toba Capital + Furious Collective + FloQast",
+            title: "Toba Capital: Partner | Furious Collective: Co-Founder | FloQast: Board Member & Advisor",
+            dateLabel: "Jan 2017 | about T=+26",
+            yearsFromGrad: 26.0,
+            stage: 6,
+            stageLabel: "Multiplier",
+            note: "This stack change adds Furious Collective while Toba and FloQast remain active."
+          },
+          {
+            id: "rob-furious-floqast-beech",
+            profile: "rob",
+            type: "actual",
+            badge: "ML",
+            company: "Furious Collective + FloQast + Beech Valley Solutions",
+            title: "Furious Collective: Co-Founder | FloQast: Board Member & Advisor | Beech Valley Solutions: Board Member & Advisor",
+            dateLabel: "Jun 2017 | about T=+26",
+            yearsFromGrad: 26.4,
+            stage: 6,
+            stageLabel: "Multiplier",
+            note: "This next stack change drops Toba and adds Beech Valley Solutions."
+          },
+          {
+            id: "rob-furious-floqast-beech-trace",
+            profile: "rob",
+            type: "actual",
+            badge: "ML",
+            company: "Furious Collective + FloQast + Beech Valley Solutions + Tracevision",
+            title: "Furious Collective: Co-Founder | FloQast: Board Member & Advisor | Beech Valley Solutions: Board Member & Advisor | Tracevision: COO",
+            dateLabel: "2018 | about T=+27",
+            yearsFromGrad: 27.0,
+            stage: 6,
+            stageLabel: "Multiplier",
+            note: "This stack change adds Tracevision to the multiplier line."
+          },
+          {
+            id: "rob-mach1",
+            profile: "rob",
+            type: "actual",
+            badge: "M1",
+            company: "Mach 1 AI + Furious Collective + FloQast + Beech Valley Solutions + Tracevision",
+            title: "Mach 1 AI: Executive Chairman | Furious Collective: Co-Founder | FloQast: Board Member & Advisor | Beech Valley Solutions: Board Member & Advisor | Tracevision: COO",
+            dateLabel: "Jan 2025 | about T=+34",
+            yearsFromGrad: 34.0,
+            stage: 6,
+            stageLabel: "Multiplier",
+            note: "This stack change adds Mach 1 AI on top of the existing multiplier portfolio."
+          },
+          {
+            id: "rob-current-stack",
+            profile: "rob",
+            type: "actual",
+            badge: "ML",
+            company: "Mach 1 AI + Furious Collective + FloQast + Beech Valley Solutions + Tracevision",
+            title: "Current stack: Mach 1 AI | Furious Collective | FloQast | Beech Valley Solutions | Tracevision",
+            dateLabel: "Mar 30, 2026 | about T=+35",
+            yearsFromGrad: 35.0,
+            stage: 6,
+            stageLabel: "Multiplier",
+            note: "This end dot shows the current multiplier stack still active in the present."
+          }
+        ],
+        future: [],
+        prelaunch: []
+      }
+    };
+
+    const stages = [
+      { value: 1, label: "Worker" },
+      { value: 2, label: "Manager" },
+      { value: 3, label: "Startup Leader" },
+      { value: 4, label: "Vice President" },
+      { value: 5, label: "Founder" },
+      { value: 6, label: "Multiplier" }
+    ];
+
+    const chartFrame = document.getElementById("chartFrame");
+    const gridLayer = document.getElementById("gridLayer");
+    const pathLayer = document.getElementById("pathLayer");
+    const markerSvgLayer = document.getElementById("markerSvgLayer");
+    const tooltip = document.getElementById("tooltip");
+    const profileToggle = document.getElementById("profileToggle");
+
+    const plotWidth = dims.width - dims.margin.left - dims.margin.right;
+    const plotHeight = dims.height - dims.margin.top - dims.margin.bottom;
+    const minStage = 1;
+    const maxStage = 6.2;
+
+    let currentView = "both";
+
+    function clamp(value, min, max) {
+      return Math.max(min, Math.min(max, value));
+    }
+
+    function createSvg(tag, attrs = {}) {
+      const node = document.createElementNS("http://www.w3.org/2000/svg", tag);
+      Object.entries(attrs).forEach(([key, value]) => node.setAttribute(key, value));
+      return node;
+    }
+
+    function stageBadgeColor(key) {
+      const palette = {
+        UR: ["#7b4c9a", "#b37ad0"],
+        VK: ["#4b6775", "#7b9eac"],
+        M1: ["#a44f24", "#d18d5f"],
+        SM: ["#6d7d42", "#9cb26b"],
+        FH: ["#8f4b3d", "#ca8b71"],
+        PB: ["#587a66", "#90af9e"],
+        YA: ["#3b5a8a", "#5f7fb0"],
+        RM: ["#325e73", "#5e89a0"],
+        RB: ["#50677a", "#8198aa"],
+        AG: ["#6b5b8d", "#9788b5"],
+        KC: ["#7d5538", "#ba8864"],
+        DK: ["#3f6d72", "#6fa0a7"],
+        TB: ["#5f6d45", "#8ea66a"],
+        ML: ["#705c44", "#aa8e68"],
+        "++": ["#4f6c7a", "#7fa2b4"],
+        ">>": ["#406170", "#5c8597"],
+        "??": ["#6f6382", "#9789ad"],
+        AR: ["#8c6741", "#c79b6f"]
+      };
+      return palette[key] || ["#5b6c74", "#97afb7"];
+    }
+
+    function badgeMarkup(code) {
+      const [start, end] = stageBadgeColor(code);
+      return `
+        <div class="badge" style="background: linear-gradient(145deg, ${start}, ${end});">
+          ${code}
+        </div>
+      `;
+    }
+
+    function activeProfileIds() {
+      if (currentView === "both") {
+        return ["rob", "will"];
+      }
+      return [currentView];
+    }
+
+    function axisYearsForView() {
+      return { min: -3, max: 36 };
+    }
+
+    function xScale(years, axis) {
+      return dims.margin.left + ((years - axis.min) / (axis.max - axis.min)) * plotWidth;
+    }
+
+    function yScale(stage) {
+      return dims.margin.top + ((maxStage - stage) / (maxStage - minStage)) * plotHeight;
+    }
+
+    function pathFrom(points) {
+      return points
+        .map((point, index) => `${index === 0 ? "M" : "L"} ${point.x.toFixed(3)} ${point.y.toFixed(3)}`)
+        .join(" ");
+    }
+
+    function overviewEntry() {
+      return {
+        type: "overview",
+        profile: "both",
+        company: "Two lines, different chapters",
+        title: "Same strata, very different clocks",
+        dateLabel: "Same starting point, different distance from T=0",
+        stageLabel: "Perspective",
+        note: "The point of the overlay is perspective, not pressure.\n\n\"Never let the future disturb you. You will meet it, if you have to, with the same weapons of reason which today arm you against the present.\"\n\n\"What stands in the way becomes the way.\""
+      };
+    }
+
+    function placeTooltip(entry, x, y) {
+      tooltip.innerHTML = `
+        <p class="tooltip-type">${entry.profile === "rob" ? "Rob" : entry.profile === "will" ? "Will" : "Overview"}</p>
+        <strong>${entry.company}</strong>
+        <p>${entry.title}</p>
+        <p style="margin-top: 8px;">${entry.dateLabel}</p>
+      `;
+
+      const frameRect = chartFrame.getBoundingClientRect();
+      const left = clamp(x - frameRect.left + 18, 16, frameRect.width - 296);
+      const top = clamp(y - frameRect.top - 14, 16, frameRect.height - 124);
+      tooltip.style.left = `${left}px`;
+      tooltip.style.top = `${top}px`;
+      tooltip.classList.add("visible");
+      tooltip.setAttribute("aria-hidden", "false");
+    }
+
+    function hideTooltip() {
+      tooltip.classList.remove("visible");
+      tooltip.setAttribute("aria-hidden", "true");
+    }
+
+    function axisTicks(axis) {
+      if (axis.max <= 15) {
+        return Array.from({ length: axis.max - axis.min + 1 }, (_, i) => axis.min + i);
+      }
+      const ticks = [];
+      for (let year = axis.min; year <= Math.min(axis.max, 10); year += 1) {
+        ticks.push(year);
+      }
+      for (let year = 15; year <= axis.max; year += 5) {
+        ticks.push(year);
+      }
+      return ticks.filter((value, index, array) => array.indexOf(value) === index);
+    }
+
+    function tickLabel(value) {
+      if (value === 0) {
+        return "T=0";
+      }
+      if (value < 0) {
+        return `T${value}`;
+      }
+      return `+${value}y`;
+    }
+
+    function renderGrid(axis) {
+      gridLayer.innerHTML = "";
+
+      stages.forEach((stage, index) => {
+        const bandTop = yScale(Math.min(maxStage, stage.value + 0.5));
+        const bandBottom = yScale(Math.max(minStage, stage.value - 0.5));
+        gridLayer.appendChild(createSvg("rect", {
+          x: dims.margin.left,
+          y: bandTop,
+          width: plotWidth,
+          height: Math.max(0, bandBottom - bandTop),
+          class: `stage-band${index % 2 === 0 ? " alt" : ""}`
+        }));
+
+        const y = yScale(stage.value);
+        gridLayer.appendChild(createSvg("line", {
+          x1: dims.margin.left,
+          y1: y,
+          x2: dims.width - dims.margin.right,
+          y2: y,
+          class: "grid-line"
+        }));
+
+        const label = createSvg("text", {
+          x: dims.margin.left - 18,
+          y: y + 4,
+          "text-anchor": "end",
+          class: "tick-label"
+        });
+        label.textContent = stage.label;
+        gridLayer.appendChild(label);
+      });
+
+      axisTicks(axis).forEach((year) => {
+        const x = xScale(year, axis);
+        gridLayer.appendChild(createSvg("line", {
+          x1: x,
+          y1: dims.margin.top,
+          x2: x,
+          y2: dims.height - dims.margin.bottom,
+          class: "grid-line"
+        }));
+
+        const denseEarly = year >= 1 && year <= 10;
+        const negativeTick = year < 0;
+        const majorTick = year === 0 || year === 5 || year === 10 || year >= 15;
+        const tickY = denseEarly
+          ? dims.height - dims.margin.bottom + (year % 2 === 0 ? 30 : 46)
+          : dims.height - dims.margin.bottom + (negativeTick ? 46 : 30);
+        const tick = createSvg("text", {
+          x,
+          y: tickY,
+          "text-anchor": "middle",
+          class: `tick-label${denseEarly ? " dense" : ""}${majorTick ? " major" : ""}`
+        });
+        tick.textContent = tickLabel(year);
+        gridLayer.appendChild(tick);
+      });
+
+      const xAxisLabel = createSvg("text", {
+        x: dims.margin.left + plotWidth / 2,
+        y: dims.height - 18,
+        "text-anchor": "middle",
+        class: "axis-label"
+      });
+      xAxisLabel.textContent = "Time Since Graduation";
+      gridLayer.appendChild(xAxisLabel);
+
+      const yAxisLabel = createSvg("text", {
+        x: 44,
+        y: dims.margin.top + plotHeight / 2,
+        transform: `rotate(-90 44 ${dims.margin.top + plotHeight / 2})`,
+        "text-anchor": "middle",
+        class: "axis-label"
+      });
+      yAxisLabel.textContent = "Growth Stage";
+      gridLayer.appendChild(yAxisLabel);
+    }
+
+    function bindInteractive(node, entry) {
+      node.addEventListener("mouseenter", (event) => {
+        document.querySelectorAll(".marker-group.active").forEach((item) => item.classList.remove("active"));
+        node.classList.add("active");
+        placeTooltip(entry, event.clientX, event.clientY);
+      });
+
+      node.addEventListener("focus", () => {
+        document.querySelectorAll(".marker-group.active").forEach((item) => item.classList.remove("active"));
+        node.classList.add("active");
+        const rect = node.getBoundingClientRect();
+        placeTooltip(entry, rect.left + rect.width / 2, rect.top);
+      });
+
+      node.addEventListener("mouseleave", () => {
+        node.classList.remove("active");
+        hideTooltip();
+      });
+
+      node.addEventListener("blur", () => {
+        node.classList.remove("active");
+        hideTooltip();
+      });
+    }
+
+    function renderMarker(entry, profile) {
+      const group = createSvg("g", {
+        class: "marker-group",
+        tabindex: "0",
+        role: "button",
+        "aria-label": `${profile.name}: ${entry.title}`
+      });
+
+      const halo = createSvg("circle", {
+        cx: entry.x,
+        cy: entry.y,
+        r: 14,
+        class: "marker-halo",
+        fill: profile.color
+      });
+
+      const ring = createSvg("circle", {
+        cx: entry.x,
+        cy: entry.y,
+        r: 8,
+        class: "marker-ring"
+      });
+
+      const core = createSvg("circle", {
+        cx: entry.x,
+        cy: entry.y,
+        r: 6.2,
+        class: "marker-core",
+        fill: profile.color
+      });
+
+      const label = createSvg("text", {
+        x: entry.x,
+        y: entry.y + 24,
+        class: "marker-label"
+      });
+      label.textContent = `${profile.name} · ${entry.company}`;
+
+      const hit = createSvg("circle", {
+        cx: entry.x,
+        cy: entry.y,
+        r: 16,
+        class: "marker-hit"
+      });
+
+      group.appendChild(halo);
+      group.appendChild(ring);
+      group.appendChild(core);
+      group.appendChild(label);
+      group.appendChild(hit);
+      bindInteractive(group, entry);
+      markerSvgLayer.appendChild(group);
+    }
+
+    function renderTimelines() {
+      pathLayer.innerHTML = "";
+      markerSvgLayer.innerHTML = "";
+      const axis = axisYearsForView();
+      renderGrid(axis);
+
+      activeProfileIds().forEach((profileId) => {
+        const profile = profiles[profileId];
+        const actualPoints = profile.actual.map((entry) => ({
+          ...entry,
+          x: xScale(entry.yearsFromGrad, axis),
+          y: yScale(entry.stage)
+        }));
+
+        const actualPath = createSvg("path", {
+          d: pathFrom(actualPoints),
+          class: "line-actual",
+          style: `stroke:${profile.color}; stroke-dasharray:880; stroke-dashoffset:880; filter: drop-shadow(0 10px 14px ${profile.color}33);`
+        });
+        pathLayer.appendChild(actualPath);
+
+        actualPoints.forEach((entry) => {
+          renderMarker(entry, profile);
+        });
+      });
+    }
+
+    function updateToggleUi() {
+      profileToggle.querySelectorAll(".toggle-btn").forEach((button) => {
+        const active = button.dataset.view === currentView;
+        button.classList.toggle("active", active);
+        button.setAttribute("aria-pressed", active ? "true" : "false");
+      });
+    }
+
+    function renderAll() {
+      renderTimelines();
+      hideTooltip();
+      updateToggleUi();
+    }
+
+    profileToggle.addEventListener("click", (event) => {
+      const button = event.target.closest(".toggle-btn");
+      if (!button) {
+        return;
+      }
+      currentView = button.dataset.view;
+      renderAll();
+    });
+
+    renderAll();
+  </script>
+</body>
+</html>
