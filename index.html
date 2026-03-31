@@ -295,6 +295,12 @@
       overflow: hidden;
     }
 
+    .chart-scroll {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
     .chart-frame::before {
       content: "";
       position: absolute;
@@ -626,13 +632,15 @@
     }
 
     @media (max-width: 980px) {
-      .hero-copy,
-      .chart-shell {
-        grid-template-columns: 1fr;
-      }
-
       .heading-row {
         flex-direction: column;
+        align-items: stretch;
+      }
+
+      .control-stack {
+        width: 100%;
+        justify-items: start;
+        gap: 10px;
       }
 
       .quote-carousel {
@@ -646,8 +654,10 @@
 
     @media (max-width: 720px) {
       main {
-        width: min(100% - 20px, 1200px);
-        margin-top: 14px;
+        width: calc(100% - 20px);
+        margin-top: 12px;
+        margin-bottom: 28px;
+        gap: 18px;
       }
 
       .hero,
@@ -660,8 +670,78 @@
         padding: 18px;
       }
 
+      .eyebrow {
+        margin-bottom: 14px;
+      }
+
+      h1 {
+        white-space: normal;
+        font-size: clamp(1.9rem, 10vw, 2.9rem);
+        line-height: 0.98;
+        margin-bottom: 18px;
+      }
+
+      .lead,
+      .section-sub {
+        font-size: 0.98rem;
+        line-height: 1.6;
+      }
+
+      .quote-card,
+      .stoic-card,
+      .quote-carousel {
+        max-width: 100%;
+      }
+
+      .quote-card,
+      .stoic-card {
+        padding: 16px 18px;
+      }
+
+      .quote {
+        white-space: normal;
+        font-size: 1rem;
+      }
+
+      .heading-copy {
+        padding-top: 0;
+      }
+
+      h2 {
+        font-size: clamp(1.4rem, 7vw, 1.9rem);
+      }
+
+      .control-stack {
+        justify-items: stretch;
+      }
+
+      .profile-toggle {
+        align-self: flex-start;
+      }
+
+      .legend {
+        gap: 10px 12px;
+        font-size: 0.82rem;
+      }
+
       .chart-frame {
-        min-height: 460px;
+        min-height: 0;
+      }
+
+      .chart-scroll {
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      svg {
+        min-width: 920px;
+      }
+
+      .tooltip {
+        min-width: 190px;
+        max-width: 220px;
+        padding: 12px 14px;
       }
 
       .mini-grid {
@@ -733,13 +813,15 @@
         </div>
 
         <div class="chart-frame" id="chartFrame">
-          <svg id="timelineSvg" viewBox="0 0 920 560" aria-labelledby="chartTitle chartDesc" role="img">
-            <title id="chartTitle">Career journey since graduation</title>
-            <desc id="chartDesc">An interactive timeline comparing Rob and Will Meinhardt from college graduation onward.</desc>
-            <g id="gridLayer"></g>
-            <g id="pathLayer"></g>
-            <g id="markerSvgLayer"></g>
-          </svg>
+          <div class="chart-scroll" id="chartScroll">
+            <svg id="timelineSvg" viewBox="0 0 920 560" aria-labelledby="chartTitle chartDesc" role="img">
+              <title id="chartTitle">Career journey since graduation</title>
+              <desc id="chartDesc">An interactive timeline comparing Rob and Will Meinhardt from college graduation onward.</desc>
+              <g id="gridLayer"></g>
+              <g id="pathLayer"></g>
+              <g id="markerSvgLayer"></g>
+            </svg>
+          </div>
           <div class="tooltip" id="tooltip" aria-hidden="true"></div>
         </div>
 
@@ -1323,27 +1405,43 @@
     }
 
     function bindInteractive(node, entry) {
-      node.addEventListener("mouseenter", (event) => {
+      const activate = (x, y) => {
         document.querySelectorAll(".marker-group.active").forEach((item) => item.classList.remove("active"));
         node.classList.add("active");
-        placeTooltip(entry, event.clientX, event.clientY);
+        placeTooltip(entry, x, y);
+      };
+
+      const deactivate = () => {
+        node.classList.remove("active");
+        hideTooltip();
+      };
+
+      node.addEventListener("mouseenter", (event) => {
+        activate(event.clientX, event.clientY);
       });
 
       node.addEventListener("focus", () => {
-        document.querySelectorAll(".marker-group.active").forEach((item) => item.classList.remove("active"));
-        node.classList.add("active");
         const rect = node.getBoundingClientRect();
-        placeTooltip(entry, rect.left + rect.width / 2, rect.top);
+        activate(rect.left + rect.width / 2, rect.top);
       });
 
       node.addEventListener("mouseleave", () => {
-        node.classList.remove("active");
-        hideTooltip();
+        deactivate();
       });
 
       node.addEventListener("blur", () => {
-        node.classList.remove("active");
-        hideTooltip();
+        deactivate();
+      });
+
+      node.addEventListener("click", (event) => {
+        event.preventDefault();
+        const rect = node.getBoundingClientRect();
+        const alreadyActive = node.classList.contains("active") && tooltip.classList.contains("visible");
+        if (alreadyActive) {
+          deactivate();
+          return;
+        }
+        activate(rect.left + rect.width / 2, rect.top);
       });
     }
 
